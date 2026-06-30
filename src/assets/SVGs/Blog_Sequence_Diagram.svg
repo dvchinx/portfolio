@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1040" viewBox="0 0 1800 1040" role="img" aria-labelledby="title desc">
+  <title id="title">Diagrama de secuencia - Blog</title>
+  <desc id="desc">Flujo entre User, PostList, PostView, postsLoader, gray-matter y ReactMarkdown.</desc>
+
+  <defs>
+    <style>
+      .bg { fill: #0a0f1b; }
+      .panel { fill: #11182b; stroke: #3d4f7c; stroke-width: 1; rx: 8; }
+      .actor { fill: #1a243d; stroke: #7f93c5; stroke-width: 1; rx: 6; }
+      .actor-text { font-family: Segoe UI, Arial, sans-serif; font-size: 16px; font-weight: 600; fill: #ffffff; }
+      .lane { stroke: #3d4f7c; stroke-dasharray: 5 6; }
+      .arrow { stroke: #ffffff; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .arrow-return { stroke: #ffffff; stroke-width: 2; fill: none; marker-end: url(#arrowhead); stroke-dasharray: 7 6; }
+      .msg { font-family: Segoe UI, Arial, sans-serif; font-size: 14px; fill: #ffffff; }
+      .title { font-family: Segoe UI, Arial, sans-serif; font-size: 28px; font-weight: 700; fill: #ffffff; }
+      .subtitle { font-family: Segoe UI, Arial, sans-serif; font-size: 16px; fill: #ffffff; }
+    </style>
+
+    <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#ffffff" />
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1800" height="1040" />
+  <rect class="panel" x="24" y="24" width="1752" height="992" />
+
+  <text class="title" x="56" y="70">Data Flow Architecture</text>
+  <text class="subtitle" x="56" y="100">Diagram: Data Flow Through postsLoader and ReactMarkdown</text>
+
+  <!-- Actors -->
+  <g transform="translate(40,130)">
+    <rect class="actor" x="0" y="0" width="140" height="44" />
+    <text class="actor-text" x="70" y="28" text-anchor="middle">User</text>
+
+    <rect class="actor" x="230" y="0" width="160" height="44" />
+    <text class="actor-text" x="310" y="28" text-anchor="middle">PostList</text>
+
+    <rect class="actor" x="470" y="0" width="160" height="44" />
+    <text class="actor-text" x="550" y="28" text-anchor="middle">PostView</text>
+
+    <rect class="actor" x="760" y="0" width="250" height="44" />
+    <text class="actor-text" x="885" y="28" text-anchor="middle">postsLoader</text>
+
+    <rect class="actor" x="1080" y="0" width="180" height="44" />
+    <text class="actor-text" x="1170" y="28" text-anchor="middle">gray-matter</text>
+
+    <rect class="actor" x="1330" y="0" width="210" height="44" />
+    <text class="actor-text" x="1435" y="28" text-anchor="middle">ReactMarkdown</text>
+
+    <!-- Lanes -->
+    <line class="lane" x1="70" y1="50" x2="70" y2="840" />
+    <line class="lane" x1="310" y1="50" x2="310" y2="840" />
+    <line class="lane" x1="550" y1="50" x2="550" y2="840" />
+    <line class="lane" x1="885" y1="50" x2="885" y2="840" />
+    <line class="lane" x1="1170" y1="50" x2="1170" y2="840" />
+    <line class="lane" x1="1435" y1="50" x2="1435" y2="840" />
+
+    <!-- Messages -->
+    <text class="msg" x="170" y="96">Navigate to /</text>
+    <line class="arrow" x1="70" y1="112" x2="305" y2="112" />
+
+    <text class="msg" x="540" y="156">loadPosts()</text>
+    <line class="arrow" x1="310" y1="172" x2="880" y2="172" />
+
+    <text class="msg" x="965" y="216">import.meta.glob('src/posts/**/*.md')</text>
+    <line class="arrow" x1="885" y1="232" x2="1165" y2="232" />
+
+    <text class="msg" x="968" y="276">gray-matter(rawContent)</text>
+    <line class="arrow" x1="885" y1="292" x2="1165" y2="292" />
+
+    <text class="msg" x="835" y="336">{ data, content } array</text>
+    <line class="arrow-return" x1="1165" y1="352" x2="890" y2="352" />
+
+    <text class="msg" x="450" y="396">searchPosts() + category filter + paginate (9)</text>
+    <line class="arrow-return" x1="885" y1="412" x2="315" y2="412" />
+
+    <text class="msg" x="175" y="456">Post cards grid</text>
+    <line class="arrow-return" x1="310" y1="472" x2="75" y2="472" />
+
+    <text class="msg" x="225" y="516">Navigate to /:year/:month/:slug</text>
+    <line class="arrow" x1="70" y1="532" x2="545" y2="532" />
+
+    <text class="msg" x="690" y="576">loadPost(year, month, slug)</text>
+    <line class="arrow" x1="550" y1="592" x2="880" y2="592" />
+
+    <text class="msg" x="960" y="636">gray-matter(rawContent)</text>
+    <line class="arrow" x1="885" y1="652" x2="1165" y2="652" />
+
+    <text class="msg" x="935" y="696">single post { data, content }</text>
+    <line class="arrow-return" x1="1165" y1="712" x2="890" y2="712" />
+
+    <text class="msg" x="920" y="756">ReactMarkdown + remark-gfm + rehype-raw</text>
+    <line class="arrow" x1="550" y1="772" x2="1430" y2="772" />
+
+    <text class="msg" x="425" y="816">Rendered HTML</text>
+    <line class="arrow-return" x1="1435" y1="832" x2="75" y2="832" />
+  </g>
+</svg>

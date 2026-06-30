@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1120" viewBox="0 0 2000 1120" role="img" aria-labelledby="title desc">
+  <title id="title">Diagrama de componentes del Blog</title>
+  <desc id="desc">Relaciones entre entry points, app, componentes de pagina, layout, utilidades y contenido Markdown.</desc>
+  <defs>
+    <style>
+      .bg { fill: #0a0f1b; }
+      .panel { fill: #11182b; stroke: #3d4f7c; stroke-width: 1.2; }
+      .group { fill: #151f36; stroke: #7289c0; stroke-width: 1.1; }
+      .group-label { font-family: Segoe UI, Arial, sans-serif; font-size: 18px; font-weight: 700; fill: #ffffff; }
+      .node { fill: #1d2945; stroke: #8ea3d6; stroke-width: 1.1; }
+      .text { font-family: Segoe UI, Arial, sans-serif; font-size: 14px; font-weight: 600; fill: #ffffff; }
+      .arrow { stroke: #ffffff; stroke-width: 2.1; fill: none; marker-end: url(#arrow); }
+      .title { font-family: Segoe UI, Arial, sans-serif; font-size: 30px; font-weight: 700; fill: #ffffff; }
+      .subtitle { font-family: Segoe UI, Arial, sans-serif; font-size: 16px; fill: #d7e2ff; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#ffffff" />
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="2000" height="1120" />
+  <rect class="panel" x="24" y="24" width="1952" height="1072" rx="14" />
+
+  <text class="title" x="56" y="78">Blog Component Architecture</text>
+  <text class="subtitle" x="56" y="106">Entry points, core app, page components, utilities, layout and markdown content</text>
+
+  <rect class="group" x="420" y="150" width="360" height="220" rx="12" />
+  <text class="group-label" x="450" y="184">EntryPoints</text>
+
+  <rect class="node" x="470" y="222" width="260" height="70" rx="10" />
+  <text class="text" x="600" y="252" text-anchor="middle">index.html</text>
+  <text class="text" x="600" y="274" text-anchor="middle">(root mount point)</text>
+
+  <rect class="node" x="470" y="302" width="260" height="70" rx="10" />
+  <text class="text" x="600" y="332" text-anchor="middle">src/main.jsx</text>
+  <text class="text" x="600" y="354" text-anchor="middle">ReactDOM + BrowserRouter</text>
+
+  <rect class="group" x="300" y="420" width="980" height="120" rx="12" />
+  <text class="group-label" x="330" y="454">CoreApplication</text>
+
+  <rect class="node" x="490" y="465" width="600" height="60" rx="10" />
+  <text class="text" x="790" y="500" text-anchor="middle">src/App.jsx - Routes + layout shell</text>
+
+  <rect class="group" x="90" y="590" width="980" height="210" rx="12" />
+  <text class="group-label" x="120" y="624">PageComponents</text>
+
+  <rect class="node" x="130" y="660" width="390" height="98" rx="10" />
+  <text class="text" x="325" y="697" text-anchor="middle">PostList.jsx</text>
+  <text class="text" x="325" y="721" text-anchor="middle">/, list + search + filter + pagination</text>
+
+  <rect class="node" x="560" y="660" width="470" height="98" rx="10" />
+  <text class="text" x="795" y="697" text-anchor="middle">PostView.jsx</text>
+  <text class="text" x="795" y="721" text-anchor="middle">/:year/:month/:slug + markdown rendering</text>
+
+  <rect class="group" x="1120" y="590" width="790" height="210" rx="12" />
+  <text class="group-label" x="1150" y="624">LayoutComponents</text>
+
+  <rect class="node" x="1160" y="660" width="230" height="98" rx="10" />
+  <text class="text" x="1275" y="697" text-anchor="middle">AnimatedBackground</text>
+  <text class="text" x="1275" y="721" text-anchor="middle">fixed parallax</text>
+
+  <rect class="node" x="1420" y="660" width="220" height="98" rx="10" />
+  <text class="text" x="1530" y="697" text-anchor="middle">Header</text>
+  <text class="text" x="1530" y="721" text-anchor="middle">title + suite link</text>
+
+  <rect class="node" x="1670" y="660" width="200" height="98" rx="10" />
+  <text class="text" x="1770" y="697" text-anchor="middle">Footer</text>
+  <text class="text" x="1770" y="721" text-anchor="middle">links + copyright</text>
+
+  <rect class="group" x="90" y="840" width="470" height="240" rx="12" />
+  <text class="group-label" x="120" y="874">Utilities + Content</text>
+
+  <rect class="node" x="130" y="908" width="390" height="88" rx="10" />
+  <text class="text" x="325" y="944" text-anchor="middle">postsLoader.js</text>
+  <text class="text" x="325" y="968" text-anchor="middle">loadPosts() / searchPosts() / loadPost()</text>
+
+  <rect class="node" x="130" y="1006" width="390" height="58" rx="10" />
+  <text class="text" x="325" y="1040" text-anchor="middle">src/posts/YYYY/MM/slug.md</text>
+
+  <line class="arrow" x1="600" y1="292" x2="600" y2="302" />
+  <line class="arrow" x1="600" y1="372" x2="790" y2="465" />
+
+  <line class="arrow" x1="720" y1="525" x2="325" y2="660" />
+  <line class="arrow" x1="860" y1="525" x2="795" y2="660" />
+  <line class="arrow" x1="920" y1="525" x2="1275" y2="660" />
+  <line class="arrow" x1="980" y1="525" x2="1530" y2="660" />
+  <line class="arrow" x1="1040" y1="525" x2="1770" y2="660" />
+
+  <line class="arrow" x1="325" y1="758" x2="325" y2="908" />
+  <line class="arrow" x1="795" y1="758" x2="400" y2="908" />
+  <line class="arrow" x1="325" y1="996" x2="325" y2="1006" />
+</svg>

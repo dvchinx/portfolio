@@ -15,25 +15,29 @@ No test runner is configured. There are no automated tests in this project.
 
 ## Architecture
 
-This is a **single-page portfolio** with no routing. The entire app is one component:
+This is a **single-page portfolio** with no routing:
 
-- `src/main.jsx` → `src/App.jsx` → `src/components/portfolio/Portfolio/Portfolio.jsx`
+- `src/main.jsx` → `src/App.jsx`
 
-**All content** (skill domains, certifications, project stories) is hardcoded as data arrays directly inside `Portfolio.jsx`. There is no API, no CMS, and no state management library.
+`src/App.jsx` is the page: it composes the sections in order — Hero, Profile (`#perfil`), Work index + case studies (`#trabajo`), Recognition (`#logros`), Contact (`#contacto`) — each in `src/components/`. **All content** is data in `src/data/profile.js` (profile, experience, practices, capabilities, recognitions, certifications) and `src/data/projects.js` (case studies and their diagram definitions). There is no API, no CMS and no state management library.
 
-### Navigation
+`src/data/projects.js` documents its sources at the top: every claim comes from each project's own repository. Keep it that way when updating a case.
 
-Navigation is scroll-based. `scrollToSection()` calls `element.scrollIntoView()`. An `IntersectionObserver` watches the five `<section>` elements (`#home`, `#about`, `#skills`, `#projects`, `#contact`) to keep `activeSection` in sync with the scroll position.
+### Motion
+
+`src/lib/motion.js` wires GSAP (ScrollTrigger, SplitText) to Lenis smooth scrolling and exports `scrollToTarget()`. Shared reveals in `App.jsx` use `[data-split]`, `[data-fade]` and `[data-reveal-image]`. Animations are skipped under `prefers-reduced-motion`.
 
 ### Key non-obvious patterns
 
-**Certifications list height sync** — `certListHeight` state is set via a `ResizeObserver` on `.skills-left` (left column) and `.skills-right-header`, then injected as the CSS custom property `--cert-list-height`. This makes the scrollable cert list exactly fill the remaining height of the left column at any viewport size.
+**ScrollTrigger refresh after layout changes** — The Recognition section is pinned and measures its start once. Anything that changes page height (opening a case study, expanding the certifications list) must call `ScrollTrigger.refresh()`, or the pinned carousel ends up on top of other content.
 
-**Diagram modal** — `activeDiagram` holds the currently open SVG asset. Opening a diagram locks `document.body.style.overflow = 'hidden'` and listens for `Escape`. Click outside the modal or clicking × closes it.
+**Collapsible case studies** — Cases start collapsed (`openCases` in `App.jsx`; a `#caso-<id>` hash opens one). `useCollapse` in `CaseStudy.jsx` animates height with GSAP and sets `hidden` itself, not as a prop. The clip (`overflow: hidden`) only exists during the animation because the scrolly diagram inside is `position: sticky`.
 
-**Project story layout** — Each project uses a `.project-story-sticky` wrapper with a `.project-story-rail` that scrolls horizontally through narrative panels (architecture, stack/metrics). The `.project-story-shell` triggers a reveal animation via `IntersectionObserver` adding `.project-visible`.
+**Scrolly diagrams** — `ScrollyDiagram` keeps an SVG `FlowDiagram` sticky while the steps scroll; each step lists the `nodes`, `edges` and `packets` it highlights. Node and edge coordinates are in the diagram's `viewBox`; edge labels are 10px mono, so keep them short.
 
-**`diagrams` vs `diagramAssets`** — `diagramAssets` holds real SVG image imports (used by all current projects). The `diagrams` field (text-based stage flows) exists in the schema but is unused and not rendered in any current project data.
+**Recognition carousel** — On desktop the track scrolls horizontally while pinned; the distance is measured to the last card's right edge plus padding (`scrollWidth` omits that padding). The colored card is driven by scroll progress, not `:hover`, which doesn't update while the track moves under a still cursor.
+
+**Certifications order** — `Profile.jsx` sorts by kind (`KIND_ORDER`), keeps each institution together, and puts `INSTITUTIONS_LAST` at the end. Add entries anywhere in `certifications`.
 
 ### Vite config
 
@@ -42,22 +46,23 @@ Navigation is scroll-based. `scrollToSection()` calls `element.scrollIntoView()`
 
 ### Styling
 
-All portfolio styles live in `Portfolio.css` (co-located with the component). Global resets are in `src/styles/index.css`. CSS custom properties are defined at the `:root` level in `Portfolio.css`:
+All styles live in `src/styles/portfolio.css`; `src/styles/index.css` only has minimal global resets. Design tokens are CSS custom properties on `:root` in `portfolio.css`, and every rule is scoped under the `.portfolio` root class:
 
-- Colors: `--portfolio-bg-*`, `--portfolio-text-main`, `--portfolio-text-soft`, `--portfolio-accent-a` (violet), `--portfolio-accent-b` (pink)
-- Fonts: Sora (body) and Space Grotesk (headings) loaded from Google Fonts
+- Colors: `--paper`, `--paper-2`, `--ink`, `--ink-2`, `--rule`, `--accent` (red), and `--night*` / `--on-night*` for the dark Recognition section
+- Fonts: Archivo (display/UI), Newsreader (text) and JetBrains Mono, loaded from Google Fonts
 
 ### Contact form
 
-Uses [Web3Forms](https://web3forms.com/) (`https://api.web3forms.com/submit`) — no backend needed. The `access_key` is embedded in `Portfolio.jsx` and routes submissions to `jesus.florezch@gmail.com`.
+Uses [Web3Forms](https://web3forms.com/) (`https://api.web3forms.com/submit`) — no backend needed. The `access_key` is embedded in `src/components/Contact.jsx` and routes submissions to `jesus.florezch@gmail.com`.
 
 ### Assets
 
 ```
 src/assets/
-  Images/    # PNG screenshots of projects
-  Me/        # Profile photo
-  SVGs/      # Architecture diagrams (component, sequence, deployment) + UI icons
+  achievements/  # Photos for the Recognition cards (<event>-<year>)
+  projects/      # Case study covers, named after the project id
+  profile/       # Profile photo
+public/          # favicon.svg / favicon.ico / apple-touch-icon.png, served under /portfolio/
 ```
 
-SVG diagrams are imported as React component `src` values and displayed via `<img>` tags (not as inline SVG components).
+Images are imported as module URLs and rendered with `<img>`. Use lowercase kebab-case file names.

@@ -31,7 +31,7 @@ function Lightbox({ figure, onClose }) {
         <figure className="lightbox__figure">
           <div className="lightbox__bar">
             <figcaption className="mono">{figure.title}</figcaption>
-            <button type="button" className="button-line" onClick={onClose}>
+            <button type="button" className="button button--small" onClick={onClose}>
               Cerrar
             </button>
           </div>

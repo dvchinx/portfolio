@@ -1,16 +1,28 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { SplitText } from 'gsap/SplitText';
 import Lenis from 'lenis';
+import { useSyncExternalStore } from 'react';
 
-gsap.registerPlugin(ScrollTrigger, SplitText);
+gsap.registerPlugin(ScrollTrigger);
 
-export const HEADER_OFFSET = 64;
+// Floating nav: 14px from the top plus its 62px height, with some air
+export const HEADER_OFFSET = 96;
 
 let lenis = null;
 
-export const prefersReducedMotion = () =>
-  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const REDUCED_MOTION = '(prefers-reduced-motion: reduce)';
+
+export const prefersReducedMotion = () => window.matchMedia(REDUCED_MOTION).matches;
+
+const subscribeReducedMotion = (onChange) => {
+  const query = window.matchMedia(REDUCED_MOTION);
+  query.addEventListener('change', onChange);
+  return () => query.removeEventListener('change', onChange);
+};
+
+/** For render code: the prerendered HTML assumes motion, the client corrects it after hydrating. */
+export const useReducedMotion = () =>
+  useSyncExternalStore(subscribeReducedMotion, prefersReducedMotion, () => false);
 
 // Lenis drives the scroll position; GSAP's ticker drives Lenis so ScrollTrigger
 // and the smooth scroll share a single animation frame.
@@ -49,4 +61,4 @@ export function setScrollLocked(locked) {
   else lenis.start();
 }
 
-export { gsap, ScrollTrigger, SplitText };
+export { gsap, ScrollTrigger };

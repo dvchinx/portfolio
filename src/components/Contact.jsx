@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { scrollToTarget } from '../lib/motion';
+import { BrandIcon, Icon } from '../lib/icons';
 
 const WEB3FORMS_KEY = '0747e6a8-4350-4ca8-b840-8aaf7effeb64';
 const EMPTY_FORM = { name: '', email: '', message: '' };
@@ -65,74 +66,82 @@ function Contact({ profile }) {
     }
   };
 
+  const links = [
+    { label: 'GitHub', href: profile.github, icon: <BrandIcon name="github" size={14} /> },
+    { label: 'LinkedIn', href: profile.linkedin, icon: <BrandIcon name="linkedin" size={14} /> },
+    { label: 'Blog', href: profile.blog, icon: <Icon name="pen" size={14} /> },
+    { label: 'Suite', href: 'https://jesusflorez.cloud', icon: <Icon name="globe" size={14} /> }
+  ];
+
   return (
-    <section className="section contact" id="contacto" aria-labelledby="contacto-title">
-      <p className="eyebrow">(04) Contacto</p>
-      <h2 className="contact__title" id="contacto-title" data-split>¿Hablamos?</h2>
-
-      <div className="contact__mail-row" data-fade>
-        <a className="contact__mail" href={`mailto:${profile.email}`}>{profile.email}</a>
-        <button type="button" className="button-line" onClick={copyEmail} aria-live="polite">
-          {copied ? 'Copiado' : 'Copiar'}
-        </button>
-      </div>
-
+    <section className="section container contact" id="contacto" aria-labelledby="contacto-title">
       <div className="contact__grid">
-        <ul className="contact__links" data-fade>
-          <li>
-            <a className="link-arrow" href={profile.github} target="_blank" rel="noopener noreferrer">
-              GitHub <span aria-hidden="true">↗</span>
-            </a>
-          </li>
-          <li>
-            <a className="link-arrow" href={profile.linkedin} target="_blank" rel="noopener noreferrer">
-              LinkedIn <span aria-hidden="true">↗</span>
-            </a>
-          </li>
-          <li>
-            <a className="link-arrow" href="https://blog.jesusflorez.cloud" target="_blank" rel="noopener noreferrer">
-              Blog <span aria-hidden="true">↗</span>
-            </a>
-          </li>
-        </ul>
+        <div className="contact__intro">
+          <h2 className="section-title" id="contacto-title" data-fade>Contacto</h2>
+          <p className="section-intro" data-fade>
+            ¿Tienes un rol de backend, una colaboración o una pregunta? Escríbeme por el formulario o directo al correo.
+          </p>
+          <div className="contact__mail-row" data-fade>
+            <a className="contact__mail" href={`mailto:${profile.email}`}>{profile.email}</a>
+            <button
+              type="button"
+              className="icon-button"
+              onClick={copyEmail}
+              aria-label={copied ? 'Correo copiado' : 'Copiar correo'}
+              title={copied ? 'Copiado' : 'Copiar correo'}
+            >
+              <Icon name={copied ? 'check' : 'copy'} />
+            </button>
+          </div>
+          <p className="contact__status-line" aria-live="polite">{copied ? 'Correo copiado al portapapeles.' : ''}</p>
+        </div>
 
-        <form className="contact__form" onSubmit={onSubmit} noValidate data-fade>
+        <form className="card contact__form" onSubmit={onSubmit} noValidate data-fade>
           <label className="field">
-            <span className="mono">Nombre</span>
+            <span>Nombre</span>
             <input name="name" value={form.name} onChange={onChange} autoComplete="name" required />
           </label>
           <label className="field">
-            <span className="mono">Correo</span>
+            <span>Correo</span>
             <input name="email" type="email" value={form.email} onChange={onChange} autoComplete="email" required />
           </label>
           <label className="field field--wide">
-            <span className="mono">Mensaje</span>
+            <span>Mensaje</span>
             <textarea name="message" rows={4} value={form.message} onChange={onChange} required />
           </label>
           <div className="contact__submit">
-            <button type="submit" className="button-solid" disabled={status.type === 'sending'}>
-              Enviar mensaje
+            <button type="submit" className="button button--primary" disabled={status.type === 'sending'}>
+              Enviar mensaje <Icon name="arrow" size={12} />
             </button>
-            <p className={`mono contact__status is-${status.type}`} role="status">{status.message}</p>
+            <p className={`contact__status is-${status.type}`} role="status">{status.message}</p>
           </div>
         </form>
       </div>
 
+      <ul className="contact__links" data-fade>
+        {links.map((link) => (
+          <li key={link.label}>
+            <a href={link.href} target="_blank" rel="noopener noreferrer">
+              <span className="contact__link-icon">{link.icon}</span>
+              {link.label}
+              <Icon name="arrow" size={10} className="contact__link-arrow" />
+            </a>
+          </li>
+        ))}
+      </ul>
+
       <footer className="footer">
-        <p className="mono">© 2026 {profile.name}</p>
-        <p className="footer__note">
-          Diseñado y construido a mano con React, GSAP y Lenis. Servido por Nginx en el mismo VPS que la suite.
-        </p>
-        <p className="mono">Colombia · {time}</p>
+        <p>© 2026 {profile.name} · Hecho con React y GSAP</p>
+        <p>Colombia · {time}</p>
         <a
           href="#inicio"
-          className="mono footer__top"
+          className="text-link"
           onClick={(event) => {
             event.preventDefault();
             scrollToTarget('#inicio', { offset: 0 });
           }}
         >
-          Volver arriba ↑
+          Volver arriba <Icon name="up" size={12} />
         </a>
       </footer>
     </section>

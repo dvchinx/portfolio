@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import FlowDiagram from './FlowDiagram';
-import { prefersReducedMotion, scrollToTarget } from '../lib/motion';
+import { prefersReducedMotion, scrollToTarget, useReducedMotion } from '../lib/motion';
 
 const pad = (n) => String(n).padStart(2, '0');
 
@@ -10,6 +10,7 @@ const pad = (n) => String(n).padStart(2, '0');
  */
 function ScrollyDiagram({ diagram, caption }) {
   const [active, setActive] = useState(-1);
+  const reducedMotion = useReducedMotion();
   const stepsRef = useRef(null);
   const scrollerRef = useRef(null);
   const total = diagram.steps.length;
@@ -70,7 +71,7 @@ function ScrollyDiagram({ diagram, caption }) {
                 step={step}
                 stepKey={String(active)}
                 title={caption}
-                animated={!prefersReducedMotion()}
+                animated={!reducedMotion}
               />
             </div>
           </div>

@@ -31,7 +31,7 @@ export const profile = {
   headline:
     'Desarrollador Backend en **MiuTab** | Especializado en **Java** y **Spring Framework**, desde el **modelo de datos** hasta el **contenedor en producción**',
   highlights:
-    '**Top 14** de Colombia en **Kattis** | **Top 19** de Colombia en **AtCoder** | Competidor activo en **ICPC** y **CCPL**',
+    '**Top 14** de Colombia en **Kattis** | **Top 16** de Colombia en **AtCoder** | Competidor activo en **ICPC** y **CCPL**',
   about: {
     work:
       'Llevo más de dos años desarrollando software con Java 17+, Spring Framework y Python. Me interesa la parte del sistema que nadie ve cuando funciona: contratos de API, transacciones, colas y despliegues.',

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import FlowDiagram from './FlowDiagram';
 import { prefersReducedMotion, scrollToTarget, useReducedMotion } from '../lib/motion';
+import { useStrings } from '../i18n';
 
 const pad = (n) => String(n).padStart(2, '0');
 
@@ -9,6 +10,7 @@ const pad = (n) => String(n).padStart(2, '0');
  * The step closest to the middle of the viewport drives the highlight.
  */
 function ScrollyDiagram({ diagram, caption }) {
+  const t = useStrings().diagram;
   const [active, setActive] = useState(-1);
   const reducedMotion = useReducedMotion();
   const stepsRef = useRef(null);
@@ -80,17 +82,17 @@ function ScrollyDiagram({ diagram, caption }) {
           <p className="scrolly__caption">
             <span className="mono">{caption}</span>
             <span className="mono scrolly__count">
-              {step ? `Paso ${pad(active + 1)} / ${pad(total)}` : 'Vista general'}
+              {step ? t.step(pad(active + 1), pad(total)) : t.overview}
             </span>
           </p>
-          <div className="scrolly__dots" role="tablist" aria-label="Pasos del diagrama">
+          <div className="scrolly__dots" role="tablist" aria-label={t.steps}>
             {diagram.steps.map((item, i) => (
               <button
                 key={item.title}
                 type="button"
                 role="tab"
                 aria-selected={i === active}
-                aria-label={`Paso ${i + 1}: ${item.title}`}
+                aria-label={t.stepLabel(i + 1, item.title)}
                 className={i === active ? 'is-active' : ''}
                 onClick={() => goToStep(i)}
               />

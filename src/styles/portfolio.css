@@ -513,6 +513,33 @@ body:has(.portfolio) {
   background: var(--accent-soft);
 }
 
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav__lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 11px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  transition: color 0.2s, background-color 0.2s, border-color 0.2s;
+}
+
+.nav__lang:hover {
+  color: var(--accent-ink);
+  background: var(--accent-soft);
+  border-color: transparent;
+}
+
 .nav__toggle {
   display: none;
   place-items: center;

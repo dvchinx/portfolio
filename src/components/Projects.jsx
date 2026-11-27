@@ -1,9 +1,12 @@
 import { BrandIcon, Icon } from '../lib/icons';
+import { useStrings } from '../i18n';
 
 const VISIBLE_TAGS = 5;
 const VISIBLE_STATS = 2;
 
 function Projects({ projects, github, onSelect }) {
+  const t = useStrings();
+
   return (
     <ul className="grid grid--3 project-grid">
       {projects.map((project) => (
@@ -47,16 +50,16 @@ function Projects({ projects, github, onSelect }) {
                 onSelect(project.id);
               }}
             >
-              Leer el caso <Icon name="chevron" size={12} />
+              {t.projects.readCase} <Icon name="chevron" size={12} />
             </a>
             {project.liveUrl && (
               <a className="text-link" href={project.liveUrl} target="_blank" rel="noopener noreferrer">
-                En vivo <Icon name="arrow" size={10} />
+                {t.projects.live} <Icon name="arrow" size={10} />
               </a>
             )}
             {project.repoUrl && (
               <a className="text-link" href={project.repoUrl} target="_blank" rel="noopener noreferrer">
-                Código <Icon name="arrow" size={10} />
+                {t.projects.code} <Icon name="arrow" size={10} />
               </a>
             )}
           </footer>
@@ -68,7 +71,7 @@ function Projects({ projects, github, onSelect }) {
           <span className="logo-tile logo-tile--lg" aria-hidden="true">
             <BrandIcon name="github" size={28} />
           </span>
-          <span className="project-card__title">Más proyectos en GitHub</span>
+          <span className="project-card__title">{t.projects.more}</span>
           <span className="text-link">
             {github.replace('https://', '')} <Icon name="arrow" size={10} />
           </span>

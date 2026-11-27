@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import ScrollyDiagram from './ScrollyDiagram';
 import { gsap, ScrollTrigger, prefersReducedMotion, scrollToTarget } from '../lib/motion';
 import { Icon } from '../lib/icons';
+import { useStrings } from '../i18n';
 
 function ExternalLink({ href, children }) {
   return (
@@ -71,6 +72,7 @@ function useCollapse(open) {
 }
 
 function CaseStudy({ project, open, onToggle, onOpenFigure }) {
+  const { caseStudy: t, projects: tp } = useStrings();
   const { index } = project;
   const [bodyRef, bodyInitiallyHidden] = useCollapse(open);
   const bodyId = `caso-${project.id}-detalle`;
@@ -85,7 +87,7 @@ function CaseStudy({ project, open, onToggle, onOpenFigure }) {
       <header className="case__head">
         <div className="case__heading">
           <p className="kicker">
-            Caso {index} · {project.kind}
+            {t.kicker(index, project.kind)}
           </p>
           <h3 className="case__title" id={`caso-${project.id}-title`}>
             {project.title}
@@ -96,11 +98,11 @@ function CaseStudy({ project, open, onToggle, onOpenFigure }) {
 
       <dl className="case__meta">
         <div>
-          <dt>Rol</dt>
+          <dt>{t.role}</dt>
           <dd>{project.role}</dd>
         </div>
         <div className="case__meta-stack">
-          <dt>Stack</dt>
+          <dt>{t.stack}</dt>
           <dd>
             <ul className="dot-list">
               {project.stack.map((tech) => (
@@ -111,10 +113,10 @@ function CaseStudy({ project, open, onToggle, onOpenFigure }) {
         </div>
         {(project.liveUrl || project.repoUrl) && (
           <div>
-            <dt>Enlaces</dt>
+            <dt>{t.links}</dt>
             <dd className="case__links">
-              {project.liveUrl && <ExternalLink href={project.liveUrl}>En vivo</ExternalLink>}
-              {project.repoUrl && <ExternalLink href={project.repoUrl}>Código</ExternalLink>}
+              {project.liveUrl && <ExternalLink href={project.liveUrl}>{tp.live}</ExternalLink>}
+              {project.repoUrl && <ExternalLink href={project.repoUrl}>{tp.code}</ExternalLink>}
             </dd>
           </div>
         )}
@@ -128,7 +130,7 @@ function CaseStudy({ project, open, onToggle, onOpenFigure }) {
           aria-controls={bodyId}
           onClick={() => onToggle(!open)}
         >
-          {open ? 'Ocultar el caso' : 'Ver el caso completo'}
+          {open ? t.hide : t.open}
           <Icon name={open ? 'up' : 'chevron'} size={14} />
         </button>
       </div>
@@ -162,11 +164,11 @@ function CaseStudy({ project, open, onToggle, onOpenFigure }) {
 
         <div className="case__brief">
           <section data-fade>
-            <h4 className="case__label">Contexto</h4>
+            <h4 className="case__label">{t.context}</h4>
             <p className="case__text">{project.context}</p>
           </section>
           <section data-fade>
-            <h4 className="case__label">Restricciones</h4>
+            <h4 className="case__label">{t.constraints}</h4>
             <ol className="case__constraints">
               {project.constraints.map((item) => (
                 <li key={item}>{item}</li>
@@ -175,24 +177,24 @@ function CaseStudy({ project, open, onToggle, onOpenFigure }) {
           </section>
         </div>
 
-        <section className="case__flow" aria-label={`Arquitectura de ${project.title}`}>
-          <h4 className="case__label">Cómo funciona</h4>
-          <ScrollyDiagram diagram={project.diagram} caption={`Fig. ${index}.1 — Arquitectura`} />
+        <section className="case__flow" aria-label={t.architectureOf(project.title)}>
+          <h4 className="case__label">{t.flow}</h4>
+          <ScrollyDiagram diagram={project.diagram} caption={`Fig. ${index}.1 — ${t.architecture}`} />
         </section>
 
         <section className="case__decisions">
-          <h4 className="case__label">Decisiones</h4>
+          <h4 className="case__label">{t.decisions}</h4>
           <ol>
             {project.decisions.map((decision, i) => (
               <li key={decision.title} className="decision" data-fade>
                 <span className="decision__num">D{String(i + 1).padStart(2, '0')}</span>
                 <h5 className="decision__title">{decision.title}</h5>
                 <p className="decision__why">
-                  <span>Por qué</span>
+                  <span>{t.why}</span>
                   {decision.why}
                 </p>
                 <p className="decision__cost">
-                  <span>Costo</span>
+                  <span>{t.cost}</span>
                   {decision.tradeoff}
                 </p>
               </li>
@@ -201,7 +203,7 @@ function CaseStudy({ project, open, onToggle, onOpenFigure }) {
         </section>
 
         <section className="case__retro" data-fade>
-          <h4 className="case__label">Qué cambiaría hoy</h4>
+          <h4 className="case__label">{t.retrospective}</h4>
           <ol>
             {project.retrospective.map((item) => (
               <li key={item}>{item}</li>
@@ -211,7 +213,7 @@ function CaseStudy({ project, open, onToggle, onOpenFigure }) {
 
         {project.figures.length > 0 && (
           <section className="case__figures">
-            <h4 className="case__label">Documentación</h4>
+            <h4 className="case__label">{t.figures}</h4>
             <ul>
               {project.figures.map((figure, i) => (
                 <li key={figure.title}>
@@ -230,7 +232,7 @@ function CaseStudy({ project, open, onToggle, onOpenFigure }) {
 
         <div className="case__toggle case__toggle--end">
           <button type="button" className="button" aria-controls={bodyId} onClick={close}>
-            Cerrar el caso <Icon name="up" size={14} />
+            {t.close} <Icon name="up" size={14} />
           </button>
         </div>
       </div>

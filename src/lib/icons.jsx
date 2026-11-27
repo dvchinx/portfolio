@@ -118,7 +118,7 @@ const TECH = [
   [/icpc/i, 'trophy'],
   [/aws/i, 'cloud'],
   [/sql/i, 'database'],
-  [/hexagonal|microservicio/i, 'layers']
+  [/hexagonal|microservic/i, 'layers']
 ];
 
 export function TechIcon({ name, size = 14 }) {

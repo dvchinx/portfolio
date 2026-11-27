@@ -1,23 +1,29 @@
-import { profile, experience, recognitions, rankings, certifications } from '../data/profile';
+import * as profileData from '../data/profile';
+import { localize, strings } from '../i18n';
 
 const plain = (text) => text.replaceAll('**', '');
 const unique = (items) => [...new Set(items)];
 
 /**
  * schema.org ProfilePage + Person for search engines, built from the page data
- * so it never drifts from what the page says. Injected by scripts/prerender.js.
+ * so it never drifts from what the page says. Injected by scripts/prerender.js
+ * into each language's page.
  */
-export function structuredData() {
-  const current = experience.filter((job) => job.period.includes('Presente'));
+export function structuredData(lang) {
+  const { profile, experience, recognitions, rankings, certifications } = localize(profileData, lang);
+  const t = strings[lang];
+  const current = experience.filter((job) => job.current);
+  const url = lang === 'en' ? `${profile.site}en/` : profile.site;
 
   const person = {
     '@type': 'Person',
+    // Same entity in both languages
     '@id': `${profile.site}#persona`,
     name: profile.name,
     alternateName: [profile.name.normalize('NFD').replace(/\p{Diacritic}/gu, ''), 'dvchinx'],
-    jobTitle: 'Desarrollador Backend',
+    jobTitle: t.meta.jobTitle,
     description: plain(profile.headline),
-    url: profile.site,
+    url,
     image: `${profile.site}og-image.png`,
     sameAs: [profile.github, profile.linkedin, profile.blog],
     address: { '@type': 'PostalAddress', addressCountry: 'CO' },
@@ -31,9 +37,11 @@ export function structuredData() {
       .map((cert) => ({ '@type': 'EducationalOrganization', name: cert.institution })),
     knowsAbout: profile.knowsAbout,
     award: [
-      ...rankings.map((item) => `${item.rank} de ${item.scope} en ${item.platform}`),
+      ...rankings.map((item) => t.structuredData.ranking(item.rank, item.scope, item.platform)),
       ...recognitions.map((item) =>
-        item.rank === 'MH' ? `${item.label} (${item.event})` : `Puesto ${item.rank.replace('#', '')} · ${item.label} (${item.event})`
+        item.rank === 'MH'
+          ? `${item.label} (${item.event})`
+          : `${t.structuredData.place(item.rank.replace('#', ''))} · ${item.label} (${item.event})`
       )
     ]
   };
@@ -41,8 +49,8 @@ export function structuredData() {
   const data = {
     '@context': 'https://schema.org',
     '@type': 'ProfilePage',
-    url: profile.site,
-    inLanguage: 'es',
+    url,
+    inLanguage: lang,
     mainEntity: person
   };
 

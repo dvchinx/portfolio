@@ -1,13 +1,16 @@
 import { Icon, TechIcon } from '../lib/icons';
 import SectionHead from './SectionHead';
+import { useStrings } from '../i18n';
 
 function Skills({ capabilities }) {
+  const t = useStrings();
+
   return (
     <section className="section container" id="habilidades" aria-labelledby="habilidades-title">
       <SectionHead
         id="habilidades"
-        title="Habilidades"
-        intro="Cada herramienta con el lugar donde la usé, no solo el nombre."
+        title={t.skills.title}
+        intro={t.skills.intro}
       />
 
       <div className="grid grid--2">

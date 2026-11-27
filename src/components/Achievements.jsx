@@ -1,27 +1,29 @@
 import { Icon } from '../lib/icons';
 import { profile } from '../data/profile';
 import SectionHead from './SectionHead';
+import { useStrings } from '../i18n';
 
 const GRID_SIZE = 3;
 
-const rankTitle = (rank) => (rank === 'MH' ? 'Mención honorífica' : `Puesto ${rank.replace('#', '')}`);
-
 function Photo({ item, className, onOpen }) {
+  const t = useStrings();
   return (
     <button
       type="button"
       className={`photo-button ${className}`}
       onClick={() => onOpen({ title: `${item.label} · ${item.event}`, src: item.image })}
-      aria-label={`Ver foto: ${item.label}`}
+      aria-label={t.achievements.viewPhoto(item.label)}
     >
       {/* The button's aria-label is what assistive tech reads; alt describes the photo for image search */}
-      <img src={item.image} alt={`${profile.name} en ${item.label}, ${item.event}`} loading="lazy" />
+      <img src={item.image} alt={t.achievements.photoAlt(profile.name, item.label, item.event)} loading="lazy" />
     </button>
   );
 }
 
 /** One featured result, a grid of cards and the rest as a compact list. */
 function Achievements({ intro, items, rankings = [], onOpenFigure }) {
+  const t = useStrings();
+  const { rankTitle, rankShort } = t.achievements;
   const featured = items.find((item) => item.featured) ?? items[0];
   const rest = items.filter((item) => item !== featured);
   const grid = rest.slice(0, GRID_SIZE);
@@ -29,10 +31,10 @@ function Achievements({ intro, items, rankings = [], onOpenFigure }) {
 
   return (
     <section className="section container" id="logros" aria-labelledby="logros-title">
-      <SectionHead id="logros" title="Logros" intro={intro} />
+      <SectionHead id="logros" title={t.achievements.title} intro={intro} />
 
       {rankings.length > 0 && (
-        <ul className="grid grid--2 ranking-list" aria-label="Rankings nacionales">
+        <ul className="grid grid--2 ranking-list" aria-label={t.achievements.rankings}>
           {rankings.map((item) => (
             <li key={item.id} className="card ranking" data-fade>
               <span className="logo-tile" aria-hidden="true">
@@ -50,7 +52,7 @@ function Achievements({ intro, items, rankings = [], onOpenFigure }) {
                     item.platform
                   )}
                 </h3>
-                <p className="ranking__text">Ranking de {item.scope}</p>
+                <p className="ranking__text">{t.achievements.ranking(item.scope)}</p>
               </div>
               <span className="rank rank--lg">{item.rank}</span>
             </li>
@@ -61,10 +63,10 @@ function Achievements({ intro, items, rankings = [], onOpenFigure }) {
       <article className="card award-featured" data-fade>
         <Photo item={featured} className="award-featured__photo" onOpen={onOpenFigure} />
         <div className="award-featured__body">
-          <span className="rank rank--lg" title={rankTitle(featured.rank)}>{featured.rank}</span>
+          <span className="rank rank--lg" title={rankTitle(featured.rank)}>{rankShort(featured.rank)}</span>
           <h3 className="award-featured__title">{featured.event}</h3>
           <p className="award-featured__text">
-            {rankTitle(featured.rank)} en {featured.label}.
+            {t.achievements.featured(rankTitle(featured.rank), featured.label)}
           </p>
           <p className="meta-inline">
             <Icon name="calendar" size={13} />
@@ -88,7 +90,7 @@ function Achievements({ intro, items, rankings = [], onOpenFigure }) {
                 <Icon name="calendar" size={12} />
                 {item.date}
               </span>
-              <span className="rank" title={rankTitle(item.rank)}>{item.rank}</span>
+              <span className="rank" title={rankTitle(item.rank)}>{rankShort(item.rank)}</span>
             </footer>
           </li>
         ))}
@@ -96,7 +98,7 @@ function Achievements({ intro, items, rankings = [], onOpenFigure }) {
 
       {more.length > 0 && (
         <>
-          <h3 className="subsection-title subsection-title--rule" data-fade>Más logros</h3>
+          <h3 className="subsection-title subsection-title--rule" data-fade>{t.achievements.more}</h3>
           <ul className="grid grid--2 award-list">
             {more.map((item) => (
               <li key={item.id} className="award-row" data-fade>

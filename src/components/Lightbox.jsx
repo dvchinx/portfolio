@@ -1,8 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { setScrollLocked } from '../lib/motion';
+import { useStrings } from '../i18n';
 
 /** Native <dialog>: focus trap, Escape and backdrop come from the platform. */
 function Lightbox({ figure, onClose }) {
+  const t = useStrings().lightbox;
   const dialogRef = useRef(null);
 
   useEffect(() => {
@@ -25,14 +27,14 @@ function Lightbox({ figure, onClose }) {
       onClick={(event) => {
         if (event.target === dialogRef.current) onClose();
       }}
-      aria-label={figure?.title ?? 'Diagrama'}
+      aria-label={figure?.title ?? t.fallbackTitle}
     >
       {figure && (
         <figure className="lightbox__figure">
           <div className="lightbox__bar">
             <figcaption className="mono">{figure.title}</figcaption>
             <button type="button" className="button button--small" onClick={onClose}>
-              Cerrar
+              {t.close}
             </button>
           </div>
           <div className="lightbox__img" data-lenis-prevent>

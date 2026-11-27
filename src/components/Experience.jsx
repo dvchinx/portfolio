@@ -1,11 +1,14 @@
 import { Icon, TechIcon } from '../lib/icons';
 import Rich from './Rich';
 import SectionHead from './SectionHead';
+import { useStrings } from '../i18n';
 
 function Experience({ intro, experience, practices }) {
+  const t = useStrings();
+
   return (
     <section className="section container" id="experiencia" aria-labelledby="experiencia-title">
-      <SectionHead id="experiencia" title="Experiencia" intro={intro} />
+      <SectionHead id="experiencia" title={t.experience.title} intro={intro} />
 
       <div className="stack">
         {experience.map((job) => (
@@ -23,7 +26,7 @@ function Experience({ intro, experience, practices }) {
                 </li>
               </ul>
               <a className="text-link" href={job.url} target="_blank" rel="noopener noreferrer">
-                Sitio web <Icon name="arrow" size={10} />
+                {t.experience.website} <Icon name="arrow" size={10} />
               </a>
             </aside>
 
@@ -56,7 +59,7 @@ function Experience({ intro, experience, practices }) {
         ))}
       </div>
 
-      <h3 className="subsection-title" data-fade>Cómo trabajo</h3>
+      <h3 className="subsection-title" data-fade>{t.experience.practices}</h3>
       <ul className="grid grid--3">
         {practices.map((practice) => (
           <li key={practice.title} className="card feature-card" data-fade>

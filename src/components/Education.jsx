@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ScrollTrigger, scrollToTarget } from '../lib/motion';
 import { Icon } from '../lib/icons';
 import SectionHead from './SectionHead';
+import { useStrings } from '../i18n';
 
 const VISIBLE_CERTIFICATIONS = 8;
 
@@ -44,6 +45,7 @@ const initials = (institution) =>
     .join('');
 
 function Education({ certifications }) {
+  const t = useStrings().education;
   const [showAll, setShowAll] = useState(false);
   const listRef = useRef(null);
   const toggled = useRef(false);
@@ -60,7 +62,7 @@ function Education({ certifications }) {
 
   return (
     <section className="section container" id="formacion" aria-labelledby="formacion-title">
-      <SectionHead id="formacion" title="Formación" />
+      <SectionHead id="formacion" title={t.title} />
 
       <ul className="card degrees" data-fade>
         {degrees.map((degree) => (
@@ -73,7 +75,7 @@ function Education({ certifications }) {
               )}
             </span>
             <div>
-              <span className="badge">{degree.kind}</span>
+              <span className="badge">{t.kinds[degree.kind] ?? degree.kind}</span>
               <h3 className="degree__institution">{degree.institution}</h3>
               <p className="degree__title">{degree.title}</p>
             </div>
@@ -83,8 +85,8 @@ function Education({ certifications }) {
 
       <div className="certs" ref={listRef}>
         <div className="certs__head">
-          <h3 className="subsection-title">Certificaciones y cursos</h3>
-          <p className="certs__count">{sorted.length} registros</p>
+          <h3 className="subsection-title">{t.certifications}</h3>
+          <p className="certs__count">{t.count(sorted.length)}</p>
         </div>
         <ul className="grid grid--2 certs__list" id="certs-list">
           {visible.map((cert) => (
@@ -96,7 +98,7 @@ function Education({ certifications }) {
                 <p className="cert__title">{cert.title}</p>
                 <p className="cert__institution">{cert.institution}</p>
               </div>
-              <span className="badge">{cert.kind}</span>
+              <span className="badge">{t.kinds[cert.kind] ?? cert.kind}</span>
             </li>
           ))}
         </ul>
@@ -111,7 +113,7 @@ function Education({ certifications }) {
               setShowAll((value) => !value);
             }}
           >
-            {showAll ? 'Mostrar menos' : `Ver los ${sorted.length}`}
+            {showAll ? t.showLess : t.showAll(sorted.length)}
             <Icon name={showAll ? 'up' : 'chevron'} size={14} />
           </button>
         )}

@@ -21,14 +21,24 @@ This is a **single-page portfolio** with no routing:
 
 `src/App.jsx` is the page: it composes the sections in order — Hero, Experiencia (`#experiencia`), Logros (`#logros`), Habilidades (`#habilidades`), Proyectos + case studies (`#proyectos`), Formación (`#formacion`), Contacto (`#contacto`) — each in `src/components/`. **All content** is data in `src/data/profile.js` (profile, experience, practices, capabilities, recognitions, certifications) and `src/data/projects.js` (case studies and their diagram definitions). There is no API, no CMS and no state management library. Strings in `profile.headline`, `profile.highlights` and `experience[].bullets` may mark highlights with `**texto**` (rendered by `Rich.jsx`).
 
+### Languages (Spanish and English)
+
+The page exists in Spanish at `/portfolio/` and in English at `/portfolio/en/`; the language comes from the URL (`langFromPath` in `src/i18n/index.js`), never from browser state, so server and client render the same one.
+
+- **Content**: every visible string in `src/data/*.js` is `{ es, en }`; untranslated values (names, URLs, tech names) stay plain strings. `localize(data, lang)` resolves them in `App.jsx`. When you add or change content, write both languages.
+- **Interface strings** (labels, buttons, aria-labels, messages, meta tags) live in `src/i18n/strings.js`; components read them with `useStrings()`. Keys must exist in both languages.
+- **Keys stay in Spanish**: section ids (`#experiencia`…), `#caso-<id>`, certification `kind` (`Título`, `Curso`…, labels in `strings.education.kinds`) and recognition `rank: 'MH'`.
+- **Choosing the language**: an inline script in `index.html` runs before paint. Unless the visitor picked a language with the nav switch (`localStorage.lang`), it redirects to the first of Spanish/English in `navigator.languages`; if neither is listed, to Spanish when the time zone belongs to a Spanish-speaking country, English otherwise. Crawlers (bot user agents) are never redirected; both pages declare `hreflang` alternates.
+
 `src/data/projects.js` documents its sources at the top: every claim comes from each project's own repository. Keep it that way when updating a case.
 
 ### Prerender and SEO
 
-`npm run build` runs the client build, an SSR build of `src/entry-server.jsx` (to `dist-ssr/`, deleted afterwards) and `scripts/prerender.js`, which writes the rendered page into `dist/index.html` and injects the schema.org JSON-LD from `src/lib/structuredData.js` (built from `profile.js`). `src/main.jsx` hydrates when `#root` has markup and renders from scratch in dev.
+`npm run build` runs the client build, an SSR build of `src/entry-server.jsx` (to `dist-ssr/`, deleted afterwards) and `scripts/prerender.js`, which renders the page once per language — `dist/index.html` (es) and `dist/en/index.html` (en) — writing the `<head>` tags from `src/lib/head.js` between the `<!-- head:start/end -->` markers of `index.html` and injecting the schema.org JSON-LD from `src/lib/structuredData.js` (built from `profile.js`). `src/main.jsx` hydrates when `#root` has markup and renders from scratch in dev (open `/portfolio/en/` for English).
 
 - **Render must match on server and client**: no `window`/`document` during render or in `useState` initializers. Read browser state in effects (e.g. the `#caso-<id>` hash is applied after mount) or with `useSyncExternalStore` (`useReducedMotion` in `motion.js`).
-- **Meta tags** (title, description, canonical, Open Graph) are static in `index.html`; the canonical URL is `profile.site`. `public/` holds `og-image.png` (1200×630 capture of the hero), `sitemap.xml`, `favicon.svg` and `apple-touch-icon.png`.
+- **Meta tags** (title, description, canonical, hreflang, Open Graph) come from `strings.<lang>.meta` via `src/lib/head.js`; the canonical URL is `profile.site` (Spanish) and `profile.site + 'en/'` (English). `public/` holds `og-image.png` (1200×630 capture of the Spanish hero, shared by both), `sitemap.xml` (both URLs), `favicon.svg` and `apple-touch-icon.png`.
+- Anything that depends on the current time (the clock in the footer) is client-only (`useSyncExternalStore` with an empty server snapshot): the prerendered value would never match and React would discard the prerendered page.
 - An inline script in `index.html` adds `.motion` to `<html>` (unless reduced motion), which hides `[data-hero-in]`, `.hero__photo` and `[data-fade]` before the prerendered page paints; their GSAP reveals use `fromTo` for that reason.
 
 ### Motion

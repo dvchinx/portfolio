@@ -2,14 +2,16 @@ import { useLayoutEffect, useRef } from 'react';
 import { gsap } from '../lib/motion';
 import { BrandIcon, Icon } from '../lib/icons';
 import Rich from './Rich';
+import { useStrings } from '../i18n';
 
 function Hero({ profile }) {
+  const t = useStrings();
   const rootRef = useRef(null);
 
   const socials = [
     { label: 'GitHub', href: profile.github, icon: <BrandIcon name="github" /> },
     { label: 'LinkedIn', href: profile.linkedin, icon: <BrandIcon name="linkedin" /> },
-    { label: 'Correo', href: `mailto:${profile.email}`, icon: <Icon name="mail" /> },
+    { label: t.hero.email, href: `mailto:${profile.email}`, icon: <Icon name="mail" /> },
     { label: 'Blog', href: profile.blog, icon: <Icon name="pen" /> }
   ];
 
@@ -28,8 +30,8 @@ function Hero({ profile }) {
   return (
     <section className="hero container" id="inicio" ref={rootRef}>
       <div className="hero__text">
-        <h1 className="hero__title" data-hero-in aria-label={`Hola, soy ${profile.name}`}>
-          Hola, soy <span className="hero__name">{profile.name}</span>
+        <h1 className="hero__title" data-hero-in aria-label={`${t.hero.greeting} ${profile.name}`}>
+          {t.hero.greeting} <span className="hero__name">{profile.name}</span>
         </h1>
         <p className="hero__headline" data-hero-in>
           <Rich text={profile.headline} />
@@ -59,7 +61,7 @@ function Hero({ profile }) {
       <div className="hero__photo">
         <img
           src={profile.photo}
-          alt={`${profile.name}, desarrollador backend`}
+          alt={t.hero.photoAlt(profile.name)}
           width="1186"
           height="1599"
           fetchPriority="high"

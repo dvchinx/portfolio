@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import './styles/portfolio.css';
-import { profile, experience, practices, capabilities, recognitions, rankings, certifications } from './data/profile';
-import { projects } from './data/projects';
+import * as profileData from './data/profile';
+import { projects as projectsData } from './data/projects';
+import { LangContext, localize, strings } from './i18n';
 import { gsap, ScrollTrigger, scrollToTarget, startSmoothScroll } from './lib/motion';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -15,7 +16,10 @@ import Education from './components/Education';
 import Contact from './components/Contact';
 import Lightbox from './components/Lightbox';
 
-function App() {
+function App({ lang }) {
+  const t = strings[lang];
+  const { profile, experience, practices, capabilities, recognitions, rankings, certifications } = localize(profileData, lang);
+  const projects = localize(projectsData, lang);
   const rootRef = useRef(null);
   const [figure, setFigure] = useState(null);
   // Cases start collapsed, also in the prerendered HTML; a #caso-<id> link
@@ -75,49 +79,51 @@ function App() {
   }, []);
 
   return (
-    <div className="portfolio" ref={rootRef}>
-      <a className="skip-link" href="#experiencia">Saltar al contenido</a>
+    <LangContext value={lang}>
+      <div className="portfolio" ref={rootRef}>
+        <a className="skip-link" href="#experiencia">{t.skipLink}</a>
 
-      <Header name={profile.name} />
+        <Header name={profile.name} />
 
-      <main>
-        <Hero profile={profile} />
+        <main>
+          <Hero profile={profile} />
 
-        <Experience intro={profile.about.work} experience={experience} practices={practices} />
+          <Experience intro={profile.about.work} experience={experience} practices={practices} />
 
-        <Achievements intro={profile.about.competition} items={recognitions} rankings={rankings} onOpenFigure={setFigure} />
+          <Achievements intro={profile.about.competition} items={recognitions} rankings={rankings} onOpenFigure={setFigure} />
 
-        <Skills capabilities={capabilities} />
+          <Skills capabilities={capabilities} />
 
-        <section className="section container" id="proyectos" aria-labelledby="proyectos-title">
-          <SectionHead
-            id="proyectos"
-            title="Proyectos"
-            intro="Sistemas que diseñé, construí y opero. Cada uno tiene un caso de estudio con la arquitectura paso a paso, las decisiones con su costo y lo que cambiaría hoy."
-          />
-          <Projects projects={projects} github={profile.github} onSelect={openCase} />
+          <section className="section container" id="proyectos" aria-labelledby="proyectos-title">
+            <SectionHead
+              id="proyectos"
+              title={t.projects.title}
+              intro={t.projects.intro}
+            />
+            <Projects projects={projects} github={profile.github} onSelect={openCase} />
 
-          <h3 className="subsection-title subsection-title--rule" data-fade>Casos de estudio</h3>
-          <div className="stack">
-            {projects.map((project) => (
-              <CaseStudy
-                key={project.id}
-                project={project}
-                open={openCases.has(project.id)}
-                onToggle={(open) => toggleCase(project.id, open)}
-                onOpenFigure={setFigure}
-              />
-            ))}
-          </div>
-        </section>
+            <h3 className="subsection-title subsection-title--rule" data-fade>{t.projects.cases}</h3>
+            <div className="stack">
+              {projects.map((project) => (
+                <CaseStudy
+                  key={project.id}
+                  project={project}
+                  open={openCases.has(project.id)}
+                  onToggle={(open) => toggleCase(project.id, open)}
+                  onOpenFigure={setFigure}
+                />
+              ))}
+            </div>
+          </section>
 
-        <Education certifications={certifications} />
+          <Education certifications={certifications} />
 
-        <Contact profile={profile} />
-      </main>
+          <Contact profile={profile} />
+        </main>
 
-      <Lightbox figure={figure} onClose={() => setFigure(null)} />
-    </div>
+        <Lightbox figure={figure} onClose={() => setFigure(null)} />
+      </div>
+    </LangContext>
   );
 }
 
